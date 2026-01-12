@@ -1,76 +1,48 @@
-import { Ionicons } from '@expo/vector-icons';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { collection, onSnapshot } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { FlatList, Image, Text, View } from "react-native";
+import { db } from "../../firebase";
 
+export default function ReviewsScreen() {
+  const [reviews, setReviews] = useState<any[]>([]);
 
-export default function InfoScreen(props) { 
-    // leave props as is its giving an error because its typescript but the code will still run 
-    return (
-        <View style={styles.container}>
-            <View style={styles.titlebar}>
-                <TouchableOpacity style={styles.backButton}>
-                        <Ionicons name="chevron-back-outline" size={24} onPress={() => props.navigation.navigate('Home')}
-                          color="#000000ff" />
-                </TouchableOpacity>
-                <Text
-                    style={styles.name}>{props.route.params.text}
-                </Text>
-            </View>
-            <View style={styles.imageContainer}>
-                <Image style={styles.image} source={{uri:
-                    props.route.params.image}} />
-            </View>
-            <View style={styles.content}>
-                <Text style={styles.description}>
-                    {props.route.params.description}
-                </Text>
-            </View>
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, "reviews"), (snapshot) => {
+      setReviews(
+        snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+      );
+    });
+
+    return unsub;
+  }, []);
+
+  return (
+    <FlatList
+      data={reviews}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <View style={{ padding: 12 }}>
+          <Image
+            source={{ uri: item.imageUrl }}
+            style={{ height: 150, borderRadius: 8 }}
+          />
+
+          <Text style={{ fontSize: 18, fontWeight: "600", marginTop: 8 }}>
+            {item.title}
+          </Text>
+
+          <Text style={{ marginTop: 4 }}>
+            {item.description}
+          </Text>
+
+          <Text style={{ marginTop: 4 }}>
+            ★ {item.rating} | ▲ {item.difficulty}
+          </Text>
         </View>
-);
+      )}
+    />
+  );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#d7dd9fff'
-},
-    imageContainer : {
-        flex: 2,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row'
-},
-    image: {
-        width: 200,
-        height: 200
-},
-    content: {
-        flex: 3,
-        marginLeft: 50,
-        marginRight: 50,
-        alignItems: 'center'
-},
-    name: {
-        color: '#202020ff',
-        fontWeight: '600',
-        fontSize: 16
-},
-    description: {
-    color: '#252525ff',
-    fontSize: 14
-},
-    titlebar: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        paddingTop: 80,
-        paddingBottom: 10
-},
-    backButton: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        marginTop: 70,
-        padding: 10
-        
-}
-});

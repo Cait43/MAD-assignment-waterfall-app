@@ -1,8 +1,8 @@
 import { NavigationContainer, NavigationIndependentTree } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
-import HomeScreen from './screens/HomeScreen';
-import InfoScreen from './screens/InfoScreen';
+import HomeScreen from './(drawer)/screens/HomeScreen';
+import InfoScreen from './(drawer)/screens/InfoScreen';
 
 
 export default function App() {

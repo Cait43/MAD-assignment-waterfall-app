@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Image, StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, Polyline, UrlTile } from 'react-native-maps';
-import { useLocation } from '../../hooks/useLocation';
+import { useLocation } from '../../../hooks/useLocation';
 
 
 
@@ -155,8 +155,6 @@ export default function MapScreen() {
             })
           }
         />
-
-      
 
         {userLocation && selectedDestination && (
           <Polyline
